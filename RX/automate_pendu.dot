@@ -1,0 +1,49 @@
+
+digraph pendu {
+    rankdir=LR;
+
+    node [shape=circle, style=filled];
+
+    // États
+    S0 [label="0. Connexion"];
+    S1 [label="1. Requête de \n connexion"];
+    S2 [label="2. Confirmation de \nde connexion"];
+    S3 [label="3. Requête de \nde sélection de niveau"];
+    S4 [label="4. Lecture de niveau de facilite \npar le serveur (via HREAD)"];
+    S5 [label="5. Sélection du \n mot mystère"];
+    S6 [label="6. Ecriture du mot actuel \n et du nombre d'essais restants"];
+    S7 [label="7. Proposition de \nde caractères par le serveur "];
+    S8 [label = "8. Test du caractère\n dans le mot mystère"]; 
+    S9 [label="9. Réponse avec \nde caractères trouvés"];
+    S10 [label="10. Réponse sans de \nde caractères trouvés"];
+    S11 [label="11. Succès"];
+    S12 [label="12. Échec"];
+    S13 [label="13. Requête de \n déconnexion"];
+    S14 [label="14. Confirmation de \nde déconnexion",shape="doublecircle"];
+    S15 [style="bold", shape="point"];
+
+    // Transitions
+    S15 -> S0
+    S0 -> S1 [label="Le client se connecte\nau serveur \navec l'adresse IP et le port"];
+    S1 -> S2 [label=" Le client envoie\n une requête\n de connexion au serveur"];
+    S2 -> S3 [label="Le serveur envoie une réponse\nde connexion au client"];
+    S3 -> S4 [label="Le client fait un HWRITE du \n niveau de facilite voulu"];
+    S4 -> S5 [label="Le serveur fait un HREAD \n du niveau de facilite \n(ajouté au nbr d'essais minimal)"];
+    S5 -> S6 [label="Le serveur sélectionne \n un mot mystère"];
+
+    S6 -> S7 [label="Le serveur envoie le nombre\nde lettres du mot mystère \n via HWRITE"];
+    S7 -> S8 [label ="Le client envoi via\n HWRITE une reponse"]
+    S8 -> S9 [label=" \n\nLe caractère proposé est présent\n dans le mot mystère"];
+    S8 -> S10 [label=" \n\n Le caractère proposé \n n'est pas présent\n dans le mot mystère"];
+    
+    S9->S6 [label = "\n\n\n le serveur envoi via HWRITE \n le mot ecrit par le clent \n avec le nombre d'essais restant."]
+    S10->S6 [label = "le serveur envoi via HWRITE \n le mot ecrit par le clent \n avec le nombre d'essais restant."]
+    
+    S9 -> S11 [label=" Le mot mystère est trouvé"];
+    S10 -> S12 [label=" Le nombre maximal \nd'essais est atteint"];
+    S8 -> S13 [label=" Le client demande \n la déconnexion"];
+    S13 -> S14 [label=" Le serveur envoie une réponse\nde déconnexion au client"];
+    S11 ->S13[label = "demande de déconnexion "]; 
+    S12 ->S13[label = "demande de déconnexion" ]; 
+    
+}
